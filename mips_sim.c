@@ -25,7 +25,7 @@
 #define GET_S(ins)		(((ins) >> S_SHIFT) & ((1 << BIT_WIDTH) - 1))
 #define GET_T(ins)		(((ins) >> T_SHIFT) & ((1 << BIT_WIDTH) - 1))
 #define GET_D(ins)		(((ins) >> D_SHIFT) & ((1 << BIT_WIDTH) - 1))
-#define GET_I(ins)		((ins) & ((1 << I_BIT_WIDTH) - 1)
+#define GET_I(ins)		((ins) & ((1 << I_BIT_WIDTH) - 1))
 
 void execute_instructions(int n_instructions,
                           uint32_t instructions[n_instructions],
@@ -115,6 +115,16 @@ void execute_instructions(int n_instructions,
 			uint32_t s = read_reg(reg, GET_S(ins));
             uint32_t t = read_reg(reg, GET_T(ins));
             write_reg(reg, GET_D(ins), s * t);
+		/* beq instruction */
+        } else if ((ins & 0xFC000000) == 0x10000000) {
+			if (GET_S(ins) == GET_T(ins)) {
+				pc += GET_I(ins);
+			}
+		/* bne instruction */
+        } else if ((ins & 0xFC000000) == 0x14000000) {
+			if (GET_S(ins) != GET_T(ins)) {
+				pc += GET_I(ins);
+			}
 		}
         pc++;
     }
