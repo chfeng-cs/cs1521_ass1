@@ -105,7 +105,17 @@ void execute_instructions(int n_instructions,
             uint32_t s = read_reg(reg, GET_S(ins));
             uint32_t t = read_reg(reg, GET_T(ins));
             write_reg(reg, GET_D(ins), s - t);
-        }
+		/* slt instruction */
+        } else if ((ins & 0xFC0007FF) == 0x2A) {
+			uint32_t s = read_reg(reg, GET_S(ins));
+            uint32_t t = read_reg(reg, GET_T(ins));
+            write_reg(reg, GET_D(ins), s < t);
+		/* mul instruction */
+        } else if ((ins & 0xFC0007FF) == 0x70000002) {
+			uint32_t s = read_reg(reg, GET_S(ins));
+            uint32_t t = read_reg(reg, GET_T(ins));
+            write_reg(reg, GET_D(ins), s * t);
+		}
         pc++;
     }
 }
