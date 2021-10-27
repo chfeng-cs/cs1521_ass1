@@ -23,13 +23,13 @@
 #define BIT_WIDTH   5
 #define I_BIT_WIDTH 16
 
-#define REG_V0		2
-#define REG_A0		4
+#define REG_V0        2
+#define REG_A0        4
 
-#define GET_S(ins)		(((ins) >> S_SHIFT) & ((1 << BIT_WIDTH) - 1))
-#define GET_T(ins)		(((ins) >> T_SHIFT) & ((1 << BIT_WIDTH) - 1))
-#define GET_D(ins)		(((ins) >> D_SHIFT) & ((1 << BIT_WIDTH) - 1))
-#define GET_I(ins)		((ins) & ((1 << I_BIT_WIDTH) - 1))
+#define GET_S(ins)        (((ins) >> S_SHIFT) & ((1 << BIT_WIDTH) - 1))
+#define GET_T(ins)        (((ins) >> T_SHIFT) & ((1 << BIT_WIDTH) - 1))
+#define GET_D(ins)        (((ins) >> D_SHIFT) & ((1 << BIT_WIDTH) - 1))
+#define GET_I(ins)        ((ins) & ((1 << I_BIT_WIDTH) - 1))
 
 void execute_instructions(int n_instructions,
                           uint32_t instructions[n_instructions],
@@ -60,13 +60,13 @@ int read_reg(uint32_t *reg, int index) {
 }
 
 void print_msg(int trace_mode, int pc, int ins, char *operation, int r1, int r2, int r3, int val, int with_imme) {
-	if (!trace_mode)
-		return;
-	if (with_imme) 
-		printf("%d: 0x%08X %s  $%d, $%d, %d\n", pc, ins, operation, r1, r2, r3);
-	else
-		printf("%d: 0x%08X %s  $%d, $%d, $%d\n", pc, ins, operation, r1, r2, r3);
-	printf(">>> $%d = %d\n", r1, val);
+    if (!trace_mode)
+        return;
+    if (with_imme) 
+        printf("%d: 0x%08X %s  $%d, $%d, %d\n", pc, ins, operation, r1, r2, r3);
+    else
+        printf("%d: 0x%08X %s  $%d, $%d, $%d\n", pc, ins, operation, r1, r2, r3);
+    printf(">>> $%d = %d\n", r1, val);
 }
 
 
@@ -107,118 +107,118 @@ void execute_instructions(int n_instructions,
         //     printf("%d: 0x%08X\n", pc, instructions[pc]);
         // }
 
-		int reg_s = GET_S(ins);
-		int reg_t = GET_T(ins);
-		int reg_d = GET_D(ins);
-		int16_t imme = GET_I(ins);
+        int reg_s = GET_S(ins);
+        int reg_t = GET_T(ins);
+        int reg_d = GET_D(ins);
+        int16_t imme = GET_I(ins);
         /* add instruction */
         if ((ins & 0xFC0007FF) == 0x20) {
-			
+            
             uint32_t reg_s_val = read_reg(reg, reg_s);
             uint32_t reg_t_val = read_reg(reg, reg_t);
             write_reg(reg, reg_d, reg_s_val + reg_t_val);
-			print_msg(trace_mode, pc, ins, "add", reg_d, reg_s, reg_t, reg_s_val + reg_t_val, 0);
-			// printf("%d: 0x%08X add  $%d, $%d, $%d\n", pc, ins, reg_d, reg_s, reg_t);
-			// printf(">>> $%d = %d\n", reg_d, reg_s_val + reg_t_val);
+            print_msg(trace_mode, pc, ins, "add", reg_d, reg_s, reg_t, reg_s_val + reg_t_val, 0);
+            // printf("%d: 0x%08X add  $%d, $%d, $%d\n", pc, ins, reg_d, reg_s, reg_t);
+            // printf(">>> $%d = %d\n", reg_d, reg_s_val + reg_t_val);
         /* sub instruction */
         } else if ((ins & 0xFC0007FF) == 0x22) {
             uint32_t reg_s_val = read_reg(reg, reg_s);
             uint32_t reg_t_val = read_reg(reg, reg_t);
             write_reg(reg, reg_d, reg_s_val - reg_t_val);
-			print_msg(trace_mode, pc, ins, "sub", reg_d, reg_s, reg_t, reg_s_val - reg_t_val, 0);
-			// printf("%d: 0x%08X sub  $%d, $%d, $%d\n", pc, ins, reg_d, reg_s, reg_t);
-			// printf(">>> $%d = %d\n", reg_d, reg_s_val - reg_t_val);
-		/* slt instruction */
+            print_msg(trace_mode, pc, ins, "sub", reg_d, reg_s, reg_t, reg_s_val - reg_t_val, 0);
+            // printf("%d: 0x%08X sub  $%d, $%d, $%d\n", pc, ins, reg_d, reg_s, reg_t);
+            // printf(">>> $%d = %d\n", reg_d, reg_s_val - reg_t_val);
+        /* slt instruction */
         } else if ((ins & 0xFC0007FF) == 0x2A) {
-			uint32_t reg_s_val = read_reg(reg, reg_s);
+            uint32_t reg_s_val = read_reg(reg, reg_s);
             uint32_t reg_t_val = read_reg(reg, reg_t);
             write_reg(reg, reg_d, reg_s_val < reg_t_val);
-			print_msg(trace_mode, pc, ins, "slt", reg_d, reg_s, reg_t, reg_s_val < reg_t_val, 0);
-			// printf(">>> $%d = %d\n", reg_d, reg_s_val < reg_t_val);
-		/* mul instruction */
+            print_msg(trace_mode, pc, ins, "slt", reg_d, reg_s, reg_t, reg_s_val < reg_t_val, 0);
+            // printf(">>> $%d = %d\n", reg_d, reg_s_val < reg_t_val);
+        /* mul instruction */
         } else if ((ins & 0xFC0007FF) == 0x70000002) {
-			uint32_t reg_s_val = read_reg(reg, reg_s);
+            uint32_t reg_s_val = read_reg(reg, reg_s);
             uint32_t reg_t_val = read_reg(reg, reg_t);
             write_reg(reg, reg_d, reg_s_val * reg_t_val);
-			print_msg(trace_mode, pc, ins, "mul", reg_d, reg_s, reg_t, reg_s_val * reg_t_val, 0);
-			// printf(">>> $%d = %d\n", reg_d, reg_s_val * reg_t_val);
-		/* beq instruction */
+            print_msg(trace_mode, pc, ins, "mul", reg_d, reg_s, reg_t, reg_s_val * reg_t_val, 0);
+            // printf(">>> $%d = %d\n", reg_d, reg_s_val * reg_t_val);
+        /* beq instruction */
         } else if ((ins & 0xFC000000) == 0x10000000) {
-			uint32_t reg_s_val = read_reg(reg, reg_s);
+            uint32_t reg_s_val = read_reg(reg, reg_s);
             uint32_t reg_t_val = read_reg(reg, reg_t);
-			if (trace_mode) {
-				printf("%d: 0x%08X beq  $%d, $%d, %hd\n", pc, ins, reg_s, reg_t, imme);
-			}
-			if (reg_s_val == reg_t_val) {
-				pc += imme;
+            if (trace_mode) {
+                printf("%d: 0x%08X beq  $%d, $%d, %hd\n", pc, ins, reg_s, reg_t, imme);
+            }
+            if (reg_s_val == reg_t_val) {
+                pc += imme;
                 if (trace_mode) {
                     printf(">>> pc = %d\n", pc + imme);
                 }
                 continue;
-			} else if (trace_mode) {
+            } else if (trace_mode) {
                 printf(">>> pc = %d\n", pc);
             }
-		/* bne instruction */
+        /* bne instruction */
         } else if ((ins & 0xFC000000) == 0x14000000) {
             uint32_t reg_s_val = read_reg(reg, reg_s);
             uint32_t reg_t_val = read_reg(reg, reg_t);
-			if (trace_mode) {
-				printf("%d: 0x%08X bne  $%d, $%d, %hd\n", pc, ins, reg_s, reg_t, imme);
-			}
-			if (reg_s_val != reg_t_val) {
-				pc += imme;
+            if (trace_mode) {
+                printf("%d: 0x%08X bne  $%d, $%d, %hd\n", pc, ins, reg_s, reg_t, imme);
+            }
+            if (reg_s_val != reg_t_val) {
+                pc += imme;
                 if (trace_mode) {
                     printf(">>> pc = %d\n", pc + imme);
                 }
                 continue;
-			} else if (trace_mode) {
+            } else if (trace_mode) {
                 printf(">>> pc = %d\n", pc);
             }
-		/* addi instruction */
+        /* addi instruction */
         } else if ((ins & 0xFC000000) == 0x20000000) {
-			uint32_t reg_s_val = read_reg(reg, reg_s);
-			write_reg(reg, reg_t, reg_s_val + imme);
-			print_msg(trace_mode, pc, ins, "addi", reg_t, reg_s, imme, reg_s_val + imme, 1);
-			// printf(">>> $%d = %d\n", reg_t, reg_s_val + imme);
-		/* ori instruction */
+            uint32_t reg_s_val = read_reg(reg, reg_s);
+            write_reg(reg, reg_t, reg_s_val + imme);
+            print_msg(trace_mode, pc, ins, "addi", reg_t, reg_s, imme, reg_s_val + imme, 1);
+            // printf(">>> $%d = %d\n", reg_t, reg_s_val + imme);
+        /* ori instruction */
         } else if ((ins & 0xFC000000) == 0x34000000) {
-			uint32_t reg_s_val = read_reg(reg, reg_s);
-			write_reg(reg, reg_t, reg_s_val | imme);
-			print_msg(trace_mode, pc, ins, "ori", reg_t, reg_s, imme, reg_s_val | imme, 1);
-			// printf(">>> $%d = %d\n", reg_t, reg_s_val | imme);
-		/* lui instruction */
+            uint32_t reg_s_val = read_reg(reg, reg_s);
+            write_reg(reg, reg_t, reg_s_val | imme);
+            print_msg(trace_mode, pc, ins, "ori", reg_t, reg_s, imme, reg_s_val | imme, 1);
+            // printf(">>> $%d = %d\n", reg_t, reg_s_val | imme);
+        /* lui instruction */
         } else if ((ins & 0xFFE00000) == 0x3C000000) {
-			write_reg(reg, reg_t, imme << 16);
-			if (trace_mode) {
-				printf("%d: 0x%08X lui  $%d, %d\n", pc, ins, reg_t, imme);
-				printf(">>> $%d = %d\n", reg_t, imme << 16);
-			}
-		/* syscall instruction */
+            write_reg(reg, reg_t, imme << 16);
+            if (trace_mode) {
+                printf("%d: 0x%08X lui  $%d, %d\n", pc, ins, reg_t, imme);
+                printf(">>> $%d = %d\n", reg_t, imme << 16);
+            }
+        /* syscall instruction */
         } else if (ins == 0xC) {
-			if (trace_mode) {
-				printf("%d: 0x%08X syscall %d\n", pc, ins, reg[REG_V0]);
-				printf("<<< ");
-			}
-			if (reg[REG_V0] == 1)
-				printf("%d", reg[REG_A0]);
-			else if (reg[REG_V0] == 10)
-				exit(0);
-			else if (reg[REG_V0] == 11)
-				printf("%c", reg[REG_A0]);
+            if (trace_mode) {
+                printf("%d: 0x%08X syscall %d\n", pc, ins, reg[REG_V0]);
+                printf("<<< ");
+            }
+            if (reg[REG_V0] == 1)
+                printf("%d", reg[REG_A0]);
+            else if (reg[REG_V0] == 10)
+                exit(0);
+            else if (reg[REG_V0] == 11)
+                printf("%c", reg[REG_A0]);
             else {
                 printf("Unknown system call: %d\n", reg[REG_V0]);
                 exit(0);
             }
             
-			if (trace_mode) {
-				printf("\n");
-			}
-		} else {
+            if (trace_mode) {
+                printf("\n");
+            }
+        } else {
             
         }
 
         pc++;
-		// printf("n_instructions=%d\tpc=%d\n", n_instructions, pc);
+        // printf("n_instructions=%d\tpc=%d\n", n_instructions, pc);
     }
 }
 
